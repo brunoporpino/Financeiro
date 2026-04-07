@@ -1,144 +1,144 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from “react”;
 
-const SOURCES = ["DJ", "Agência", "Pessoal"];
+const SOURCES = [“DJ”, “Agência”, “Pessoal”];
 
 const AGENCY_CLIENTS = [
-{ name: "Vila Fit", amt: 1200 },
-{ name: "Piazza Dei Fiori", amt: 400 },
-{ name: "Piazzale Itália", amt: 400 },
-{ name: "Flora Cafeteria", amt: 400 },
-{ name: "Dra Maria Clara Correia", amt: 700 },
-{ name: "Costa Barros Advogados", amt: 1000 },
-{ name: "Natal Pneus", amt: 700 },
-{ name: "Transcopel", amt: 700 },
+{ name: “Vila Fit”, amt: 1200 },
+{ name: “Piazza Dei Fiori”, amt: 400 },
+{ name: “Piazzale Itália”, amt: 400 },
+{ name: “Flora Cafeteria”, amt: 400 },
+{ name: “Dra Maria Clara Correia”, amt: 700 },
+{ name: “Costa Barros Advogados”, amt: 1000 },
+{ name: “Natal Pneus”, amt: 700 },
+{ name: “Transcopel”, amt: 700 },
 ];
 const AGENCY_MRR = AGENCY_CLIENTS.reduce((s, c) => s + c.amt, 0);
 const AGENCY_FIXED_COSTS = [
-{ name: "Letycia", amt: 1900 },
-{ name: "Hellen", amt: 1600 },
-{ name: "DAS MEI", amt: 80.9 },
-{ name: "Domínio", amt: 112 },
+{ name: “Letycia”, amt: 1900 },
+{ name: “Hellen”, amt: 1600 },
+{ name: “DAS MEI”, amt: 80.9 },
+{ name: “Domínio”, amt: 112 },
 ];
 const AGENCY_FIXED_TOTAL = AGENCY_FIXED_COSTS.reduce((s, c) => s + c.amt, 0);
 
 const COMPROMISSOS = {
 moradia: [
-{ name: "Aluguel Apto", amt: 1500.00 },
-{ name: "Condomínio Apto", amt: 490.79 },
-{ name: "Cosern (energia)", amt: 354.88 },
-{ name: "Ultragaz", amt: 25.28 },
+{ name: “Aluguel Apto”, amt: 1500.00 },
+{ name: “Condomínio Apto”, amt: 490.79 },
+{ name: “Cosern (energia)”, amt: 354.88 },
+{ name: “Ultragaz”, amt: 25.28 },
 ],
 saude: [
-{ name: "Unimed", amt: 707.02 },
-{ name: "Prudential (seguro vida)", amt: 489.49, note: "⚠️ cancelar quando possível" },
+{ name: “Unimed”, amt: 707.02 },
+{ name: “Prudential (seguro vida)”, amt: 489.49, note: “⚠️ cancelar quando possível” },
 ],
 carro: [
-{ name: "Financiamento Carro (24x)", amt: 1800.90, remaining: 24 },
-{ name: "Seguro do Carro", amt: 230.20 },
+{ name: “Financiamento Carro (24x)”, amt: 1800.90, remaining: 24 },
+{ name: “Seguro do Carro”, amt: 230.20 },
 ],
 comunicacao: [
-{ name: "Claro Multi", amt: 229.80 },
-{ name: "Alares / Internet", amt: 109.96 },
+{ name: “Claro Multi”, amt: 229.80 },
+{ name: “Alares / Internet”, amt: 109.96 },
 ],
 dividas: [
-{ name: "Joalmi", amt: 1250.00 },
-{ name: "Acordo Serasa", amt: 165.63 },
+{ name: “Joalmi”, amt: 1250.00 },
+{ name: “Acordo Serasa”, amt: 165.63 },
 ],
 assinaturas: [
-{ name: "Adobe", amt: 189.00 },
-{ name: "Kinghost (hospedagem)", amt: 131.84 },
-{ name: "Apple (iCloud/servicos)", amt: 120.80 },
-{ name: "Microsoft 365", amt: 60.00 },
-{ name: "Amazon Prime", amt: 54.80 },
-{ name: "Anuidade Porto Seguro", amt: 39.00 },
-{ name: "Globoplay", amt: 14.90 },
+{ name: “Adobe”, amt: 189.00 },
+{ name: “Kinghost (hospedagem)”, amt: 131.84 },
+{ name: “Apple (iCloud/serviços)”, amt: 120.80 },
+{ name: “Microsoft 365”, amt: 60.00 },
+{ name: “Amazon Prime”, amt: 54.80 },
+{ name: “Anuidade Porto Seguro”, amt: 39.00 },
+{ name: “Globoplay”, amt: 14.90 },
 ],
 parcelados: [
-{ name: "Claro (21x)", amt: 470.90, remaining: 14 },
-{ name: "Airbnb Salvador (6x)", amt: 888.90, remaining: 3 },
-{ name: "ADY*Ingresse (4x)", amt: 1058.75, remaining: 1 },
-{ name: "Smiles Bilhete (6x)", amt: 311.00, remaining: 3 },
-{ name: "Esfera Milhas (12x)", amt: 224.00, remaining: 9 },
-{ name: "Smiles novo (6x)", amt: 237.00, remaining: 5 },
-{ name: "MP*6Produtos (12x)", amt: 505.97, remaining: 6 },
-{ name: "MP*6Produtos 2 (12x)", amt: 28.56, remaining: 6 },
-{ name: "Garmin (10x)", amt: 149.32, remaining: 4 },
-{ name: "Netshoes (10x)", amt: 89.99, remaining: 4 },
-{ name: "Club Wine (12x)", amt: 71.25, remaining: 4 },
-{ name: "Woom (5x)", amt: 50.40, remaining: 4 },
-{ name: "Amazon Mala (5x)", amt: 109.80, remaining: 2 },
-{ name: "Amazon BR (3x)", amt: 71.75, remaining: 2 },
-{ name: "X iPhone (10x)", amt: 748.00, remaining: 1 },
-{ name: "Cavalcanti Marinho (10x)", amt: 169.90, remaining: 1 },
-{ name: "Globoplay (12x)", amt: 14.90, remaining: 4 },
+{ name: “Claro (21x)”, amt: 470.90, remaining: 14 },
+{ name: “Airbnb Salvador (6x)”, amt: 888.90, remaining: 3 },
+{ name: “ADY*Ingresse (4x)”, amt: 1058.75, remaining: 1 },
+{ name: “Smiles Bilhete (6x)”, amt: 311.00, remaining: 3 },
+{ name: “Esfera Milhas (12x)”, amt: 224.00, remaining: 9 },
+{ name: “Smiles novo (6x)”, amt: 237.00, remaining: 5 },
+{ name: “MP*6Produtos (12x)”, amt: 505.97, remaining: 6 },
+{ name: “MP*6Produtos 2 (12x)”, amt: 28.56, remaining: 6 },
+{ name: “Garmin (10x)”, amt: 149.32, remaining: 4 },
+{ name: “Netshoes (10x)”, amt: 89.99, remaining: 4 },
+{ name: “Club Wine (12x)”, amt: 71.25, remaining: 4 },
+{ name: “Woom (5x)”, amt: 50.40, remaining: 4 },
+{ name: “Amazon Mala (5x)”, amt: 109.80, remaining: 2 },
+{ name: “Amazon BR (3x)”, amt: 71.75, remaining: 2 },
+{ name: “X iPhone (10x)”, amt: 748.00, remaining: 1 },
+{ name: “Cavalcanti Marinho (10x)”, amt: 169.90, remaining: 1 },
+{ name: “Globoplay (12x)”, amt: 14.90, remaining: 4 },
 ],
 };
 
 const COMMIT_LABELS = {
-moradia: "🏠 Moradia",
-saude: "💊 Saúde",
-carro: "🚗 Carro",
-comunicacao: "📡 Comunicacao",
-dividas: "💳 Dívidas",
-assinaturas: "📱 Assinaturas",
-parcelados: "📦 Parcelados",
+moradia: “🏠 Moradia”,
+saude: “💊 Saúde”,
+carro: “🚗 Carro”,
+comunicacao: “📡 Comunicação”,
+dividas: “💳 Dívidas”,
+assinaturas: “📱 Assinaturas”,
+parcelados: “📦 Parcelados”,
 };
 
 const EXPENSE_CATS = [
-{ name: "Alimentacao", emoji: "🍽️", color: "#f1c40f" },
-{ name: "Mercado", emoji: "🛒", color: "#2ecc71" },
-{ name: "Carro", emoji: "⛽", color: "#3498db" },
-{ name: "Pets", emoji: "🐾", color: "#e67e22" },
-{ name: "Moradia", emoji: "🏠", color: "#9b59b6" },
-{ name: "Saúde", emoji: "💊", color: "#1abc9c" },
-{ name: "Compras", emoji: "🛍️", color: "#e74c3c" },
-{ name: "Lazer", emoji: "🎉", color: "#ff6b35" },
-{ name: "Viagem", emoji: "✈️", color: "#00bcd4" },
-{ name: "Financiamento", emoji: "💳", color: "#c8f135" },
-{ name: "Equip/Tech", emoji: "📱", color: "#607d8b" },
-{ name: "Salários", emoji: "👥", color: "#ff9800" },
-{ name: "Impostos", emoji: "🧾", color: "#78909c" },
-{ name: "Outros", emoji: "📦", color: "#555" },
+{ name: “Alimentação”, emoji: “🍽️”, color: “#f1c40f” },
+{ name: “Mercado”, emoji: “🛒”, color: “#2ecc71” },
+{ name: “Carro”, emoji: “⛽”, color: “#3498db” },
+{ name: “Pets”, emoji: “🐾”, color: “#e67e22” },
+{ name: “Moradia”, emoji: “🏠”, color: “#9b59b6” },
+{ name: “Saúde”, emoji: “💊”, color: “#1abc9c” },
+{ name: “Compras”, emoji: “🛍️”, color: “#e74c3c” },
+{ name: “Lazer”, emoji: “🎉”, color: “#ff6b35” },
+{ name: “Viagem”, emoji: “✈️”, color: “#00bcd4” },
+{ name: “Financiamento”, emoji: “💳”, color: “#c8f135” },
+{ name: “Equip/Tech”, emoji: “📱”, color: “#607d8b” },
+{ name: “Salários”, emoji: “👥”, color: “#ff9800” },
+{ name: “Impostos”, emoji: “🧾”, color: “#78909c” },
+{ name: “Outros”, emoji: “📦”, color: “#555” },
 ];
 
-const MONTHS = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
-function fmt(n) { return Number(n||0).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2}); }
+const MONTHS = [“Jan”,“Fev”,“Mar”,“Abr”,“Mai”,“Jun”,“Jul”,“Ago”,“Set”,“Out”,“Nov”,“Dez”];
+function fmt(n) { return Number(n||0).toLocaleString(“pt-BR”,{minimumFractionDigits:2,maximumFractionDigits:2}); }
 function todayStr() { return new Date().toISOString().slice(0,10); }
 function monthKey(d) { return d.slice(0,7); }
-function monthLabel(k) { const [y,m]=k.split("-"); return `${MONTHS[parseInt(m)-1]}/${y.slice(2)}`; }
+function monthLabel(k) { const [y,m]=k.split(”-”); return `${MONTHS[parseInt(m)-1]}/${y.slice(2)}`; }
 function currentMonthKey() { return new Date().toISOString().slice(0,7); }
 
 const TOTAL_FIXO = Object.entries(COMPROMISSOS).reduce((total, [key, items]) => {
-if (key === "parcelados") return total + items.reduce((s,i)=>s+i.amt,0);
+if (key === “parcelados”) return total + items.reduce((s,i)=>s+i.amt,0);
 return total + items.reduce((s,i)=>s+i.amt,0);
 }, 0);
 
 export default function App() {
 const [entries, setEntries] = useState([]);
 const [projects, setProjects] = useState([]);
-const [view, setView] = useState("dashboard");
+const [view, setView] = useState(“dashboard”);
 const [toast, setToast] = useState(null);
 const [saving, setSaving] = useState(false);
 const [filterMonth, setFilterMonth] = useState(currentMonthKey());
-const [listSource, setListSource] = useState("todos");
+const [listSource, setListSource] = useState(“todos”);
 const [projView, setProjView] = useState(false);
-const [commitSection, setCommitSection] = useState("moradia");
+const [commitSection, setCommitSection] = useState(“moradia”);
 
-const [type, setType] = useState("entrada");
-const [desc, setDesc] = useState("");
-const [amt, setAmt] = useState("");
-const [cat, setCat] = useState("Alimentacao");
+const [type, setType] = useState(“entrada”);
+const [desc, setDesc] = useState(””);
+const [amt, setAmt] = useState(””);
+const [cat, setCat] = useState(“Alimentação”);
 const [date, setDate] = useState(todayStr());
-const [entrySource, setEntrySource] = useState("DJ");
-const [projClient, setProjClient] = useState("");
-const [projAmt, setProjAmt] = useState("");
+const [entrySource, setEntrySource] = useState(“DJ”);
+const [projClient, setProjClient] = useState(””);
+const [projAmt, setProjAmt] = useState(””);
 const [projDate, setProjDate] = useState(todayStr());
 const [projPaid, setProjPaid] = useState(false);
 
 useEffect(() => {
 (async () => {
 try {
-const r = await window.storage.get("financas_v2");
+const r = await window.storage.get(“financas_v2”);
 if (r) { const d = JSON.parse(r.value); setEntries(d.entries||[]); setProjects(d.projects||[]); }
 } catch {}
 })();
@@ -146,46 +146,46 @@ if (r) { const d = JSON.parse(r.value); setEntries(d.entries||[]); setProjects(d
 
 const save = useCallback(async (e, p) => {
 setSaving(true);
-try { await window.storage.set("financas_v2", JSON.stringify({entries:e,projects:p})); } catch {}
+try { await window.storage.set(“financas_v2”, JSON.stringify({entries:e,projects:p})); } catch {}
 setSaving(false);
 }, []);
 
-const showToast = (msg, color="#c8f135") => { setToast({msg,color}); setTimeout(()=>setToast(null),2200); };
+const showToast = (msg, color=”#c8f135”) => { setToast({msg,color}); setTimeout(()=>setToast(null),2200); };
 
 const addEntry = () => {
-const parsed = parseFloat(amt.replace(",","."));
-if (!desc.trim()||isNaN(parsed)||parsed<=0) { showToast("Preencha todos os campos","#ff4444"); return; }
-const e = {id:Date.now(),type,desc:desc.trim(),amt:parsed,cat:type==="saída"?cat:null,source:entrySource,date};
-const updated = [e,...entries];
+const parsed = parseFloat(amt.replace(”,”,”.”));
+if (!desc.trim()||isNaN(parsed)||parsed<=0) { showToast(“Preencha todos os campos”,”#ff4444”); return; }
+const e = {id:Date.now(),type,desc:desc.trim(),amt:parsed,cat:type===“saída”?cat:null,source:entrySource,date};
+const updated = [e,…entries];
 setEntries(updated); save(updated,projects);
-setDesc(""); setAmt("");
-showToast(type==="entrada"?"Entrada registrada ✓":"Saída registrada ✓");
+setDesc(””); setAmt(””);
+showToast(type===“entrada”?“Entrada registrada ✓”:“Saída registrada ✓”);
 };
 
 const addProject = () => {
-const parsed = parseFloat(projAmt.replace(",","."));
-if (!projClient.trim()||isNaN(parsed)||parsed<=0) { showToast("Preencha cliente e valor","#ff4444"); return; }
+const parsed = parseFloat(projAmt.replace(”,”,”.”));
+if (!projClient.trim()||isNaN(parsed)||parsed<=0) { showToast(“Preencha cliente e valor”,”#ff4444”); return; }
 const p = {id:Date.now(),client:projClient.trim(),amt:parsed,date:projDate,received:projPaid,month:monthKey(projDate)};
-const updated = [p,...projects];
+const updated = [p,…projects];
 setProjects(updated); save(entries,updated);
-setProjClient(""); setProjAmt(""); setProjPaid(false);
-showToast("Projeto registrado ✓","#35c8f1");
+setProjClient(””); setProjAmt(””); setProjPaid(false);
+showToast(“Projeto registrado ✓”,”#35c8f1”);
 };
 
 const toggleReceived = (id) => {
-const updated = projects.map(p=>p.id===id?{...p,received:!p.received}:p);
+const updated = projects.map(p=>p.id===id?{…p,received:!p.received}:p);
 setProjects(updated); save(entries,updated);
 };
 
 const delEntry = (id) => { const u=entries.filter(e=>e.id!==id); setEntries(u); save(u,projects); };
 const delProject = (id) => { const u=projects.filter(p=>p.id!==id); setProjects(u); save(entries,u); };
 
-const allMonths = [...new Set([...entries.map(e=>monthKey(e.date)),...projects.map(p=>p.month)])].sort().reverse();
+const allMonths = […new Set([…entries.map(e=>monthKey(e.date)),…projects.map(p=>p.month)])].sort().reverse();
 
 function srcStats(src, month) {
 const data = entries.filter(e=>monthKey(e.date)===month&&e.source===src);
-const ins = data.filter(e=>e.type==="entrada").reduce((s,e)=>s+e.amt,0);
-const outs = data.filter(e=>e.type==="saída").reduce((s,e)=>s+e.amt,0);
+const ins = data.filter(e=>e.type===“entrada”).reduce((s,e)=>s+e.amt,0);
+const outs = data.filter(e=>e.type===“saída”).reduce((s,e)=>s+e.amt,0);
 return {ins, outs, net: ins-outs};
 }
 
@@ -193,32 +193,32 @@ const monthProjs = projects.filter(p=>p.month===filterMonth);
 const projReceivedAmt = monthProjs.filter(p=>p.received).reduce((s,p)=>s+p.amt,0);
 const projPendingAmt = monthProjs.filter(p=>!p.received).reduce((s,p)=>s+p.amt,0);
 
-const dj = srcStats("DJ", filterMonth);
-const ag = srcStats("Agência", filterMonth);
-const pes = srcStats("Pessoal", filterMonth);
+const dj = srcStats(“DJ”, filterMonth);
+const ag = srcStats(“Agência”, filterMonth);
+const pes = srcStats(“Pessoal”, filterMonth);
 const agTotalIn = AGENCY_MRR + projReceivedAmt + ag.ins;
 const agNet = agTotalIn - ag.outs - AGENCY_FIXED_TOTAL;
 const totalNet = dj.net + agNet + pes.net;
 
 const S = {
-bg:"#0a0a0a", surface:"#111", surface2:"#161616", border:"#1e1e1e",
-accent:"#c8f135", text:"#f0f0f0", muted:"#555",
-dj:"#ff6b35", ag:"#35c8f1", pes:"#a78bfa", danger:"#ff4444", warn:"#ffaa00",
+bg:”#0a0a0a”, surface:”#111”, surface2:”#161616”, border:”#1e1e1e”,
+accent:”#c8f135”, text:”#f0f0f0”, muted:”#555”,
+dj:”#ff6b35”, ag:”#35c8f1”, pes:”#a78bfa”, danger:”#ff4444”, warn:”#ffaa00”,
 };
-const srcColor = {"DJ":S.dj,"Agência":S.ag,"Pessoal":S.pes};
+const srcColor = {“DJ”:S.dj,“Agência”:S.ag,“Pessoal”:S.pes};
 
-const Label = ({children}) => <div style={{fontSize:10,color:S.muted,textTransform:"uppercase",letterSpacing:1,display:"block",marginBottom:6}}>{children}</div>;
+const Label = ({children}) => <div style={{fontSize:10,color:S.muted,textTransform:“uppercase”,letterSpacing:1,display:“block”,marginBottom:6}}>{children}</div>;
 const MiniStat = ({label,value,color}) => (
-<div style={{flex:1,background:S.surface2,borderRadius:8,padding:"8px 10px"}}>
+<div style={{flex:1,background:S.surface2,borderRadius:8,padding:“8px 10px”}}>
 <div style={{fontSize:9,color:S.muted,marginBottom:3}}>{label}</div>
 <div style={{fontSize:13,color,fontWeight:600}}>R$ {fmt(value)}</div>
 </div>
 );
 
-const monthTabs = [currentMonthKey(),...allMonths.filter(m=>m!==currentMonthKey())].slice(0,6);
+const monthTabs = [currentMonthKey(),…allMonths.filter(m=>m!==currentMonthKey())].slice(0,6);
 
 return (
-<div style={{minHeight:"100vh",background:S.bg,color:S.text,fontFamily:"'IBM Plex Mono',monospace",maxWidth:480,margin:"0 auto",paddingBottom:80}}>
+<div style={{minHeight:“100vh”,background:S.bg,color:S.text,fontFamily:”‘IBM Plex Mono’,monospace”,maxWidth:480,margin:“0 auto”,paddingBottom:80}}>
 <style>{`@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap'); *{box-sizing:border-box;margin:0;padding:0} input{outline:none} ::-webkit-scrollbar{width:4px} ::-webkit-scrollbar-thumb{background:#222;border-radius:2px} @keyframes su{from{transform:translateY(6px);opacity:0}to{transform:translateY(0);opacity:1}} .su{animation:su 0.2s ease} .row:hover{background:#1a1a1a!important} .delbtn{opacity:0;transition:opacity 0.15s} .row:hover .delbtn{opacity:1}`}</style>
 
 ```
@@ -365,9 +365,9 @@ return (
           </div>
 
           <div style={{marginBottom:12}}>
-            <Label>Descricao</Label>
+            <Label>Descrição</Label>
             <input value={desc} onChange={e=>setDesc(e.target.value)} onKeyDown={e=>e.key==="Enter"&&addEntry()}
-              placeholder={entrySource==="DJ"&&type==="entrada"?"ex: Casamento Joao & Maria":"ex: Gasolina"}
+              placeholder={entrySource==="DJ"&&type==="entrada"?"ex: Casamento João & Maria":"ex: Gasolina"}
               style={{width:"100%",background:S.surface,border:`1px solid ${S.border}`,borderRadius:8,padding:"12px 14px",color:S.text,fontFamily:"'IBM Plex Mono'",fontSize:14}}/>
           </div>
 
