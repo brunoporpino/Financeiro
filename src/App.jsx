@@ -156,7 +156,7 @@ const addEntry = () => {
 const parsed = parseFloat(amt.replace(",","."));
 if (!desc.trim()||isNaN(parsed)||parsed<=0) { showToast("Preencha todos os campos","#ff4444"); return; }
 const e = {id:Date.now(),type,desc:desc.trim(),amt:parsed,cat:type==="saída"?cat:null,source:entrySource,date};
-const updated = [e,…entries];
+const updated = [e,...entries];
 setEntries(updated); save(updated,projects);
 setDesc(""); setAmt("");
 showToast(type==="entrada"?"Entrada registrada ✓":"Saída registrada ✓");
@@ -166,21 +166,21 @@ const addProject = () => {
 const parsed = parseFloat(projAmt.replace(",","."));
 if (!projClient.trim()||isNaN(parsed)||parsed<=0) { showToast("Preencha cliente e valor","#ff4444"); return; }
 const p = {id:Date.now(),client:projClient.trim(),amt:parsed,date:projDate,received:projPaid,month:monthKey(projDate)};
-const updated = [p,…projects];
+const updated = [p,...projects];
 setProjects(updated); save(entries,updated);
 setProjClient(""); setProjAmt(""); setProjPaid(false);
 showToast("Projeto registrado ✓","#35c8f1");
 };
 
 const toggleReceived = (id) => {
-const updated = projects.map(p=>p.id===id?{…p,received:!p.received}:p);
+const updated = projects.map(p=>p.id===id?{...p,received:!p.received}:p);
 setProjects(updated); save(entries,updated);
 };
 
 const delEntry = (id) => { const u=entries.filter(e=>e.id!==id); setEntries(u); save(u,projects); };
 const delProject = (id) => { const u=projects.filter(p=>p.id!==id); setProjects(u); save(entries,u); };
 
-const allMonths = […new Set([…entries.map(e=>monthKey(e.date)),…projects.map(p=>p.month)])].sort().reverse();
+const allMonths = [...new Set([...entries.map(e=>monthKey(e.date)),...projects.map(p=>p.month)])].sort().reverse();
 
 function srcStats(src, month) {
 const data = entries.filter(e=>monthKey(e.date)===month&&e.source===src);
@@ -215,7 +215,7 @@ const MiniStat = ({label,value,color}) => (
 </div>
 );
 
-const monthTabs = [currentMonthKey(),…allMonths.filter(m=>m!==currentMonthKey())].slice(0,6);
+const monthTabs = [currentMonthKey(),...allMonths.filter(m=>m!==currentMonthKey())].slice(0,6);
 
 return (
 <div style={{minHeight:"100vh",background:S.bg,color:S.text,fontFamily:"'IBM Plex Mono',monospace",maxWidth:480,margin:"0 auto",paddingBottom:80}}>
