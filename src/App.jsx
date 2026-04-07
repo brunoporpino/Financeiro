@@ -47,7 +47,7 @@ dividas: [
 assinaturas: [
 { name: "Adobe", amt: 189.00 },
 { name: "Kinghost (hospedagem)", amt: 131.84 },
-{ name: "Apple (iCloud/serviços)", amt: 120.80 },
+{ name: "Apple (iCloud/servicos)", amt: 120.80 },
 { name: "Microsoft 365", amt: 60.00 },
 { name: "Amazon Prime", amt: 54.80 },
 { name: "Anuidade Porto Seguro", amt: 39.00 },
@@ -78,14 +78,14 @@ const COMMIT_LABELS = {
 moradia: "🏠 Moradia",
 saude: "💊 Saúde",
 carro: "🚗 Carro",
-comunicacao: "📡 Comunicação",
+comunicacao: "📡 Comunicacao",
 dividas: "💳 Dívidas",
 assinaturas: "📱 Assinaturas",
 parcelados: "📦 Parcelados",
 };
 
 const EXPENSE_CATS = [
-{ name: "Alimentação", emoji: "🍽️", color: "#f1c40f" },
+{ name: "Alimentacao", emoji: "🍽️", color: "#f1c40f" },
 { name: "Mercado", emoji: "🛒", color: "#2ecc71" },
 { name: "Carro", emoji: "⛽", color: "#3498db" },
 { name: "Pets", emoji: "🐾", color: "#e67e22" },
@@ -127,7 +127,7 @@ const [commitSection, setCommitSection] = useState("moradia");
 const [type, setType] = useState("entrada");
 const [desc, setDesc] = useState("");
 const [amt, setAmt] = useState("");
-const [cat, setCat] = useState("Alimentação");
+const [cat, setCat] = useState("Alimentacao");
 const [date, setDate] = useState(todayStr());
 const [entrySource, setEntrySource] = useState("DJ");
 const [projClient, setProjClient] = useState("");
@@ -365,9 +365,9 @@ return (
           </div>
 
           <div style={{marginBottom:12}}>
-            <Label>Descrição</Label>
+            <Label>Descricao</Label>
             <input value={desc} onChange={e=>setDesc(e.target.value)} onKeyDown={e=>e.key==="Enter"&&addEntry()}
-              placeholder={entrySource==="DJ"&&type==="entrada"?"ex: Casamento João & Maria":"ex: Gasolina"}
+              placeholder={entrySource==="DJ"&&type==="entrada"?"ex: Casamento Joao & Maria":"ex: Gasolina"}
               style={{width:"100%",background:S.surface,border:`1px solid ${S.border}`,borderRadius:8,padding:"12px 14px",color:S.text,fontFamily:"'IBM Plex Mono'",fontSize:14}}/>
           </div>
 
