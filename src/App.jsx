@@ -33,7 +33,7 @@ saude: [
 { name: “Prudential (seguro vida)”, amt: 489.49, note: “⚠️ cancelar quando possível” },
 ],
 carro: [
-{ name: “Financiamento Carro (Inter)”, amt: 1800.90 },
+{ name: “Financiamento Carro (24x)”, amt: 1800.90, remaining: 24 },
 { name: “Seguro do Carro”, amt: 230.20 },
 ],
 comunicacao: [
