@@ -25,6 +25,7 @@ const COMPROMISSOS = {
 moradia: [
 { name: “Aluguel Apto”, amt: 1500.00 },
 { name: “Condomínio Apto”, amt: 490.79 },
+{ name: “Cosern (energia)”, amt: 354.88 },
 { name: “Ultragaz”, amt: 25.28 },
 ],
 saude: [
